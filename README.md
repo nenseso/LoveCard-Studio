@@ -28,7 +28,7 @@ To run this project on your local machine, follow these simple steps:
 
 1.  **Clone the repository** (or download the files):
     ```bash
-    git clone https://github.com/your-username/lovecard-studio.git
+    git clone https://github.com/nenseso/LoveCard-Studio.git
     cd lovecard-studio
     ```
 
