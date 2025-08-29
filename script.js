@@ -35,29 +35,37 @@ function applyPalette(card, hexList){
 
 // 工具：导出 PNG
 async function exportCardPNG(card, scale = 2){
-  const { width, height } = card.getBoundingClientRect();
+  // 暂存并移除 transform，避免 html2canvas 截图不完整
+  const originalTransform = card.style.transform;
+  card.style.transform = 'none';
 
   // 确保字体加载完成再截图
   if (document.fonts && document.fonts.ready) {
     try { await document.fonts.ready; } catch {}
   }
 
-  const canvas = await html2canvas(card, {
-    backgroundColor: null, // 保留透明（但我们有底色）
-    scale: scale,
-    useCORS: true,
-    width: Math.round(width),
-    height: Math.round(height),
-    windowWidth: Math.max(document.documentElement.clientWidth, window.innerWidth),
-    windowHeight: Math.max(document.documentElement.clientHeight, window.innerHeight),
-  });
+  try {
+    const canvas = await html2canvas(card, {
+      backgroundColor: null, // 保留透明（但我们有底色）
+      scale: scale,
+      useCORS: true,
+      // 使用 CSS 变量中定义的原始尺寸，而非 getBoundingClientRect 的视觉尺寸
+      width: parseInt(getComputedStyle(card).getPropertyValue('--card-w'), 10),
+      height: parseInt(getComputedStyle(card).getPropertyValue('--card-h'), 10),
+      windowWidth: Math.max(document.documentElement.clientWidth, window.innerWidth),
+      windowHeight: Math.max(document.documentElement.clientHeight, window.innerHeight),
+    });
 
-  const dataURL = canvas.toDataURL('image/png');
-  const a = document.createElement('a');
-  const ts = new Date().toISOString().replace(/[:.]/g,'-');
-  a.download = `LoveCard-${ts}.png`;
-  a.href = dataURL;
-  a.click();
+    const dataURL = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    const ts = new Date().toISOString().replace(/[:.]/g,'-');
+    a.download = `LoveCard-${ts}.png`;
+    a.href = dataURL;
+    a.click();
+  } finally {
+    // 恢复 transform
+    card.style.transform = originalTransform;
+  }
 }
 
 // 主逻辑
@@ -194,8 +202,11 @@ document.addEventListener('DOMContentLoaded', () => {
   els.btnDownload.addEventListener('click', async () => {
     els.btnDownload.disabled = true;
     els.btnDownload.textContent = '导出中…';
-    try{
+    try {
       await exportCardPNG(els.card, parseInt(els.exportScale.value, 10));
+    } catch (error) {
+      console.error("导出贺卡时出错:", error);
+      alert("抱歉，导出图片时遇到了一个错误。请打开浏览器的开发者控制台查看详细信息，这有助于我们定位问题。");
     } finally {
       els.btnDownload.disabled = false;
       els.btnDownload.textContent = '下载 PNG';

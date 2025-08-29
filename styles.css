@@ -264,7 +264,7 @@ body{
 .heart{
   position: absolute;
   width: var(--size, 14px); height: var(--size, 14px);
-  background: color-mix(in oklab, var(--accent) 35%, white 65%);
+  background: var(--accent);
   transform: rotate(-45deg);
   top: var(--top, 80%); left: var(--left, 50%);
   opacity: .55; filter: blur(.2px);
