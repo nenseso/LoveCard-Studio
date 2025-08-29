@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LoveCard Studio - 精美爱情贺卡生成器</title>
+  <meta name="description" content="输入文字，一键生成精美贺卡，并导出为 PNG 图片。内置爱情风格与精致UI。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- 字体：中文衬线 + 英文字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Serif+SC:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-heart" aria-hidden="true"></div>
+      <div class="brand-text">
+        <h1>LoveCard Studio</h1>
+        <p>输入你的祝福，一键生成爱情贺卡 · 导出 PNG</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btn-generate" class="btn primary">生成预览</button>
+      <button id="btn-download" class="btn accent" disabled>下载 PNG</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <aside class="control-panel glass">
+      <section class="group">
+        <label for="message">贺卡内容</label>
+        <textarea id="message" rows="8" placeholder="在这里输入你的祝福...">我愿意是荒林，在河流的两岸，
+面对一阵阵狂风，我勇敢的作战...
+只要我的爱人，是一只小鸟，
+在我的稠密的树枝间作客鸣叫。</textarea>
+        <div class="inline two">
+          <div>
+            <label for="toName">收件人（可选）</label>
+            <input id="toName" type="text" placeholder="致 · 某某" />
+          </div>
+          <div>
+            <label for="fromName">署名（可选）</label>
+            <input id="fromName" type="text" placeholder="爱你的 · 某某" />
+          </div>
+        </div>
+      </section>
+
+      <section class="group">
+        <div class="inline two">
+          <div>
+            <label for="theme">主题风格</label>
+            <select id="theme">
+              <option value="love" selected>爱情 · Love（默认）</option>
+              <option value="elegant">典雅 · Elegant</option>
+              <option value="noir">摩登 · Noir</option>
+            </select>
+          </div>
+          <div>
+            <label for="fontFamily">字体</label>
+            <select id="fontFamily">
+              <option value="'Noto Serif SC', 'Songti SC', 'PingFang SC', 'Microsoft YaHei', serif" selected>中文衬线（推荐）</option>
+              <option value="'Playfair Display', 'Noto Serif SC', serif">Playfair Display</option>
+              <option value="'Great Vibes', 'Playfair Display', serif">Great Vibes（花体）</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="inline two">
+          <div>
+            <label for="align">文字对齐</label>
+            <select id="align">
+              <option value="center" selected>居中</option>
+              <option value="left">左对齐</option>
+            </select>
+          </div>
+          <div>
+            <label for="textSize">文字大小</label>
+            <input id="textSize" type="range" min="18" max="48" value="28" />
+          </div>
+        </div>
+
+        <div class="inline two">
+          <div>
+            <label for="cardSize">画布尺寸</label>
+            <select id="cardSize">
+              <option value="1080x1080" selected>方形 · 1080×1080</option>
+              <option value="1200x800">横版 · 1200×800</option>
+              <option value="1000x1400">竖版 · 1000×1400</option>
+            </select>
+          </div>
+          <div>
+            <label for="exportScale">导出清晰度</label>
+            <select id="exportScale">
+              <option value="1">1×（标准）</option>
+              <option value="2" selected>2×（高清）</option>
+              <option value="3">3×（超清）</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="inline three toggles">
+          <label class="switch">
+            <input id="showHearts" type="checkbox" checked />
+            <span>爱情小心心</span>
+          </label>
+          <label class="switch">
+            <input id="showFrame" type="checkbox" checked />
+            <span>边框装饰</span>
+          </label>
+          <label class="switch">
+            <input id="glow" type="checkbox" checked />
+            <span>柔光</span>
+          </label>
+        </div>
+
+        <div class="palette">
+          <span class="palette-label">配色</span>
+          <button class="swatch" data-colors="ff9a9e,fad0c4,fbc2eb" title="甜蜜粉"></button>
+          <button class="swatch" data-colors="f5576c,f093fb,4facfe" title="浪漫紫"></button>
+          <button class="swatch" data-colors="ff9966,ff5e62,ffc371" title="暖阳橙"></button>
+          <button class="swatch" data-colors="a18cd1,fbc2eb,84fab0" title="梦幻薄荷"></button>
+        </div>
+      </section>
+
+      <section class="tips">
+        小贴士：生成预览后即可下载 PNG；导出清晰度越高，图片越清晰但体积越大。
+      </section>
+    </aside>
+
+    <section class="preview-panel">
+      <div id="previewWrap">
+        <!-- 卡片开始 -->
+        <div id="card" class="card theme-love with-glow with-frame" role="img" aria-label="生成的贺卡预览">
+          <!-- 漂浮心形装饰（JS 动态注入） -->
+          <div id="heartsLayer" class="hearts-layer" aria-hidden="true"></div>
+
+          <!-- 内容层 -->
+          <div class="card-inner">
+            <div class="card-header">
+              <div class="love-mark">❤</div>
+              <div class="to-line" id="toLine" hidden>致 · <span id="toText"></span></div>
+            </div>
+
+            <blockquote class="card-message" id="cardMessage">
+              在这里预览你的祝福文字…
+            </blockquote>
+
+            <div class="card-footer">
+              <div class="signature" id="signature" hidden>
+                <span class="sig-prefix">——</span>
+                <span id="fromText"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 四角花纹（仅装饰） -->
+          <div class="corners" aria-hidden="true">
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+          </div>
+        </div>
+        <!-- 卡片结束 -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>© 2025 LoveCard Studio · 让祝福更有仪式感</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
