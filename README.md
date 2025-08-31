@@ -31,20 +31,7 @@ To run this project on your local machine, follow these simple steps:
     cd lovecard-studio
     ```
 
-2.  **Start a local web server**. Since browsers have security restrictions for local files (`file:///...`), you need a server to run the application correctly. The easiest way is to use Python's built-in server.
-
-    - If you have Python 3 installed, run this command in the project directory:
-      ```bash
-      python3 -m http.server 8080
-      ```
-    - If you have Python 2, use this command instead:
-      ```bash
-      python -m SimpleHTTPServer 8080
-      ```
-
-3.  **Open in your browser**:
-    Once the server is running, open your web browser and go to the following address:
-    [http://localhost:8080](http://localhost:8080)
+2.  **Open index.html**. 
 
 That's it! You can now use the LoveCard Studio.
 
