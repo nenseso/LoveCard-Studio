@@ -2,7 +2,7 @@
 
 **LoveCard Studio** is a beautiful and easy-to-use web application that allows you to create personalized love greeting cards. Simply type your message, customize the design, and export the final card as a high-quality PNG image.
 
-![Uploading LoveCard-2025-08-31T02-11-09-497Z.png…]()
+![preview](https://github.com/user-attachments/assets/ea43a672-3e97-47b8-bc64-c1bcddd3a41b)
 
 ---
 
